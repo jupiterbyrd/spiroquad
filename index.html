@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>SPIROQUAD</title>
+  <link rel="stylesheet" href="style.css"></link>
+  <link rel="icon" type="image/x-icon" href="star.png">
+</head>
+<body>
+    <img id="grainFilter" class="backImage" src="noisy-background.jpg"/>
+    
+    <aside>
+        <h1>Spiroquad</h1>
+        <h2>by Jupiterbyrd</h2>
+        <div id="parameterMenu">
+            <div class="parameter">
+                <div class="slidecontainer">
+                    <input type="range" min="1" max="100" value="50" class="slider" id="myRange"></div>
+                    <p>❇︎ Radius who knows?</p>
+                </div>
+            </div> 
+            
+            
+        </div>
+        <p>❇︎ SPIRATIO ❇︎<br/><span id="spiratio">30%</span></p>
+        <button onclick=drawSpiro()>Draw Spiro</button>
+       
+    </aside>
+    <main>
+        <a href="#" onclick="downloadSVG()"> 
+            <svg id="spiro" viewBox="-250 -250 500 500"></svg>
+        </a>
+       
+        <button id="download-link" onclick=createdSVG()>Download</button>
+    </main>
+</body>
+<script src="cosmetic.js"></script>
+<script src="spiroquad.js"></script>
+
+</html>
