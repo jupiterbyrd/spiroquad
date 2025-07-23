@@ -3,6 +3,30 @@ class Spirograph {
     this.R = R; // Big circle radius
     this.r = r; // Small circle radius
     this.d = d; // Distance from small circle center to pen
+    this.gradientColors = ["turquoise", "black"];
+    this.createGradient()
+  }
+
+  createGradient() {
+    const defs = document.getElementById('definitions');
+    const gradient = document.createElementNS("http://www.w3.org/2000/svg", "linearGradient");
+
+    gradient.setAttribute("id", "circleSpiroGradient");
+    gradient.setAttribute("x1", "0%");
+    gradient.setAttribute("y1", "0%");
+    gradient.setAttribute("x2", "100%");
+    gradient.setAttribute("y2", "0%");
+
+    this.gradientColors.forEach((color, i) => {
+      const stop = document.createElementNS("http://www.w3.org/2000/svg", "stop");
+      stop.setAttribute("offset", `${(i / (this.gradientColors.length - 1)) * 100}%`);
+      stop.setAttribute("stop-color", color);
+      gradient.appendChild(stop);
+    });
+
+    defs.appendChild(gradient);
+    const svg = document.getElementById('spiro');
+    svg.appendChild(defs);
   }
 
   generatePoints(steps = 1000) {
@@ -34,6 +58,28 @@ class PolygonGearSpirograph {
       this.polygon = polygon; // Array of vertices [{x, y}, ...]
       this.r = r; // Rolling gear radius
       this.d = d; // Pen offset from rolling gear center
+      this.gradientColors = ["red", "var(--jupiterbyrd-orange)", "white"];
+      this.createGradient()
+    }
+    createGradient() {
+      const defs = document.getElementById('definitions');
+      const gradient = document.createElementNS("http://www.w3.org/2000/svg", "linearGradient");
+  
+      gradient.setAttribute("id", "polygonSpiroGradient");
+      gradient.setAttribute("x1", "0%");
+      gradient.setAttribute("y1", "0%");
+      gradient.setAttribute("x2", "100%");
+      gradient.setAttribute("y2", "0%");
+  
+      this.gradientColors.forEach((color, i) => {
+        const stop = document.createElementNS("http://www.w3.org/2000/svg", "stop");
+        stop.setAttribute("offset", `${(i / (this.gradientColors.length - 1)) * 100}%`);
+        stop.setAttribute("stop-color", color);
+        gradient.appendChild(stop);
+      });
+  
+      defs.appendChild(gradient);
+      
     }
   
     generatePoints(stepsPerEdge = 500, threshold= 0.5) {
@@ -124,39 +170,43 @@ function getSpiroParameters() {
     // balanced, classic spiro
   }
 }
-  
+function createDefinitions() {
+  const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+    defs.setAttribute("id", "definitions")
+    const svg = document.getElementById('spiro');
+    svg.appendChild(defs);
+}
 
 function drawSpirograph() {
+  createDefinitions()
   const THREE_STAR_rollingGearRadius = 66;
   const THREE_STAR_penOffset = 70;
 
-//context.clearRect(0, 0, canvas.width, canvas.height);
-// Square stationary gear
+  //context.clearRect(0, 0, canvas.width, canvas.height);
+  // Square stationary gear
 
-const THREE_STAR = [
-  { x: 150, y: 150 },
-  { x: 75, y: -150 },
-  { x: 0, y: 150 },
-  { x: -75, y: -150 },
-  { x: -150, y: 150 },
-];
+  const THREE_STAR = [
+    { x: 150, y: 150 },
+    { x: 75, y: -150 },
+    { x: 0, y: 150 },
+    { x: -75, y: -150 },
+    { x: -150, y: 150 },
+  ];
+ 
+
     
-    /*const square = [
-        { x: -150, y: -150 },
-        { x:  150, y: -150 },
-        { x:  150, y:  150 },
-        { x: -150, y:  150 }
-        ];*/
 
     const spiroGear = new PolygonGearSpirograph(THREE_STAR, THREE_STAR_rollingGearRadius, THREE_STAR_penOffset);
     const points = spiroGear.generatePoints(stepsPerEdge=500, threshold=0.5);
-    
-    drawAnimated(points);
-    const spiro = new Spirograph(150, 99, 51);
+
+    const spiro = new Spirograph(200, 112, 51);
     //const points = spiro.generatePoints(stepsPerEdge=500, threshold=0.5);
     const circlepoints = spiro.generatePoints(stepsPerEdge=500);
+ 
+    drawAnimated(points, color="var(--jupiterbyrd-orange)");
+    
 
-    drawAnimated(circlepoints, "red");
+    drawAnimated(circlepoints, "white");
 
     
 }
@@ -199,6 +249,7 @@ function wait(ms) {
 
 function createdSVG() {
   const svg = document.getElementById('spiro');
+  
     const serializer = new XMLSerializer();
     let source = serializer.serializeToString(svg);
 
@@ -226,3 +277,7 @@ function createdSVG() {
     setTimeout(() => URL.revokeObjectURL(url), 1000);
 
 }
+
+
+
+//STYLING STUFFFFFF
