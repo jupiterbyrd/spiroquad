@@ -179,27 +179,25 @@ function createDefinitions() {
 
 function drawSpirograph() {
   createDefinitions()
-  const THREE_STAR_rollingGearRadius = 66;
-  const THREE_STAR_penOffset = 70;
+  const rollingGearRadius = 86;
+const penOffset = 90;
 
-  //context.clearRect(0, 0, canvas.width, canvas.height);
-  // Square stationary gear
+//context.clearRect(0, 0, canvas.width, canvas.height);
+// Square stationary gear
 
-  const THREE_STAR = [
-    { x: 150, y: 150 },
-    { x: 75, y: -150 },
-    { x: 0, y: 150 },
-    { x: -75, y: -150 },
-    { x: -150, y: 150 },
-  ];
+const ICECREAM_STICK = [
+  { x: 0, y: 150 },
+
+  { x: 0, y: -150 },
+];
  
 
     
 
-    const spiroGear = new PolygonGearSpirograph(THREE_STAR, THREE_STAR_rollingGearRadius, THREE_STAR_penOffset);
+    const spiroGear = new PolygonGearSpirograph(ICECREAM_STICK, rollingGearRadius,penOffset);
     const points = spiroGear.generatePoints(stepsPerEdge=500, threshold=0.5);
 
-    const spiro = new Spirograph(200, 112, 51);
+    const spiro = new Spirograph(200, 132, 80);
     //const points = spiro.generatePoints(stepsPerEdge=500, threshold=0.5);
     const circlepoints = spiro.generatePoints(stepsPerEdge=500);
  
