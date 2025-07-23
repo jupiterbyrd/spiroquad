@@ -1,3 +1,34 @@
+class Spirograph {
+  constructor(R, r, d) {
+    this.R = R; // Big circle radius
+    this.r = r; // Small circle radius
+    this.d = d; // Distance from small circle center to pen
+  }
+
+  generatePoints(steps = 1000) {
+    const points = [];
+    const TWO_PI = Math.PI * 2;
+
+    // Calculate how many loops until it closes
+    const gcd = (a, b) => b === 0 ? a : gcd(b, a % b);
+    const rotations = this.r / gcd(this.r, this.R);
+
+    const maxTheta = rotations * TWO_PI;
+
+    for (let i = 0; i <= steps; i++) {
+      const theta = (i / steps) * maxTheta;
+
+      const x = (this.R - this.r) * Math.cos(theta) + this.d * Math.cos(((this.R - this.r) / this.r) * theta);
+      const y = (this.R - this.r) * Math.sin(theta) - this.d * Math.sin(((this.R - this.r) / this.r) * theta);
+
+      points.push({ x, y });
+    }
+
+    return points;
+  }
+}
+
+
 class PolygonGearSpirograph {
     constructor(polygon, r, d) {
       this.polygon = polygon; // Array of vertices [{x, y}, ...]
@@ -76,43 +107,75 @@ class PolygonGearSpirograph {
         return { x: cx + rotatedPx, y: cy + rotatedPy };
       }
     }
+
+function getSpiroParameters() {
   
 
-async function drawSpiro() {
-    const rollingGearRadius = 74.75;
-    const penOffset = 70;
+  const sentiment = new Sentiment();
+  const result = sentiment.analyze("I love the roses but the thorns hurt me");
 
-    //context.clearRect(0, 0, canvas.width, canvas.height);
-    // Square stationary gear
-    const square = [
+  console.log(result.score); // e.g. 1 (positive), -2 (negative)
+  console.log(result.comparative); // normalized by text length
+  if (result.score < 0) {
+    // tight spiral, short arm length
+  } else if (result.score > 0) {
+    // open spiral, wide arm length
+  } else {
+    // balanced, classic spiro
+  }
+}
+  
+
+function drawSpirograph() {
+  const THREE_STAR_rollingGearRadius = 66;
+  const THREE_STAR_penOffset = 70;
+
+//context.clearRect(0, 0, canvas.width, canvas.height);
+// Square stationary gear
+
+const THREE_STAR = [
+  { x: 150, y: 150 },
+  { x: 75, y: -150 },
+  { x: 0, y: 150 },
+  { x: -75, y: -150 },
+  { x: -150, y: 150 },
+];
+    
+    /*const square = [
         { x: -150, y: -150 },
         { x:  150, y: -150 },
         { x:  150, y:  150 },
         { x: -150, y:  150 }
-        ];
+        ];*/
 
-    const spiro = new PolygonGearSpirograph(square, rollingGearRadius, penOffset);
-    const points = spiro.generatePoints(stepsPerEdge=500, threshold=0.5);
+    const spiroGear = new PolygonGearSpirograph(THREE_STAR, THREE_STAR_rollingGearRadius, THREE_STAR_penOffset);
+    const points = spiroGear.generatePoints(stepsPerEdge=500, threshold=0.5);
     
+    drawAnimated(points);
+    const spiro = new Spirograph(150, 99, 51);
+    //const points = spiro.generatePoints(stepsPerEdge=500, threshold=0.5);
+    const circlepoints = spiro.generatePoints(stepsPerEdge=500);
 
-    drawAnimated(points, 100);
+    drawAnimated(circlepoints, "red");
+
+    
 }
 
 // Your function must be async
-async function drawAnimated(points, waitTime = 50) {
+async function drawAnimated(points, color="white", waitTime = 50) {
   const waitThreshold = points.length/20;
   const svg = document.getElementById('spiro');
   const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
   let d = `M ${points[0].x},${points[0].y}`;
 
-  svg.replaceChildren(path); // add once, keep updating it
+  svg.appendChild(path); // add once, keep updating it
   
   for (let i = 1; i < points.length; i++) {
     d += ` L ${points[i].x},${points[i].y}`;
     
     if (i % waitThreshold === 0) {
       path.setAttribute("d", d);
-      path.setAttribute("stroke", "black");
+      path.setAttribute("stroke",color);
       path.setAttribute("fill", "none");
       path.setAttribute("stroke-width", "1");
       svg.replaceChildren(path);
@@ -123,6 +186,9 @@ async function drawAnimated(points, waitTime = 50) {
 
   // Final update
   path.setAttribute("d", d);
+  path.setAttribute("stroke", color);
+  path.setAttribute("fill", "none");
+  path.setAttribute("stroke-width", "1");
 }
 
 function wait(ms) {
@@ -155,7 +221,7 @@ function createdSVG() {
     const link = document.getElementById('download-link');
     link.href = url;
     link.download = 'spirograph.svg';
-
+    link.click();
     // Revoke URL after download
     setTimeout(() => URL.revokeObjectURL(url), 1000);
 
