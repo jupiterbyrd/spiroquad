@@ -4,7 +4,7 @@
     --jupiterbyrd-orange: #dd7825;
     --light: #457865;
     --dark: rgb(0, 0, 0);
-    --background-color: #f4feff;
+    --background: #f4feff;
 
 }
 body {
@@ -16,7 +16,7 @@ body {
   backdrop-filter: invert(100%);
     font-family: var(--body-font);
     background-image: url(3f0bc1812ee8484b9d564fb6c06e8f70.svg);
-    color: white;
+    color: var(--background);
     display: grid;
     grid-template-columns: auto auto;
     gap: 15px;
@@ -41,7 +41,7 @@ h1 {
     font-family: var(--header-font);
     letter-spacing: -1px;
     font-weight: 100;
-    color: white;
+    color: var(--background);
     padding: 0;
     margin:0;
     
@@ -52,7 +52,7 @@ h2 {
     text-transform: uppercase;
     font-weight: 100;
     width: fit-content;
-    color: white;
+    color: var(--background);
     padding: 0;
     margin: 0;
 }
@@ -86,11 +86,11 @@ img#drawing {
 textarea#prompt {
   display: block;
   background-color: transparent;
-  border: white solid 1px;
+  border: var(--background) solid 1px;
   border-left: none;
   border-right: none;
   resize:none;
-  color: white;
+  color: var(--background);
   font-family: var(--body-font);
   padding-top: auto;
   padding-bottom: auto;
@@ -115,8 +115,8 @@ button {
     font-size: medium;
     font-family: var(--body-font);
     background-color: transparent ;
-    color: white;
-    border: 1px solid white;
+    color: var(--background);
+    border: 1px solid var(--background);
     text-transform: uppercase;
     margin-left: auto;
     margin-right: auto;
@@ -141,7 +141,6 @@ svg {
     background: none;
     width: 400px;
     border: none; 
-    stroke: var(--background-color);
      
 }
 main {
