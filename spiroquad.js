@@ -1,21 +1,25 @@
 import Sentiment from "https://cdn.jsdelivr.net/npm/sentiment/+esm";
 
 export const PALETTE = [
-  `var(--copper)`,
-  `var(--tea-green)`,
-    `var(var(--sage)`,
-    `var(--dim-gray)`,
-    `var(--paynes-gray)`,
-    `white`,
-    `var(--paynes-gray-2)`,
-    `var(--air-force-blue))`,
-    `var(--slate-gray)`,
-    `var(--air-force-blue-2)`,
-    `var(--cadet-gray)`,
-    `var(--jupiterbyrd-orange)`, // 0 neutral
+  
+  "#d24224",
+  "#ddd234",
+  "#a32342",
+  "#824444",
+  "#921921",
+  "#e23433",
+  "#0262e3",
+  "#0293e3",
+  "#0e83c4",
+  "#0f92d2",
+  "#0663a7",
+  
+
 ];
 
-document.querySelector("#downloadButton").addEventListener("click", createdSVG);
+//document
+  //.querySelector("#downloadButton")
+  //.addEventListener("click", downloadSVG());
 document.querySelector("#drawButton").addEventListener("click", drawSpirograph);
 class CircleSpirograph {
   constructor({
@@ -340,8 +344,9 @@ function analyzeTextToSpiroParams(text, isShadow) {
   const vertices = Math.max(3, Math.min(10, Math.floor(avgWordLength))); // 3–10
 
   const letterScore = scoreLetters(text); //apply nice letter weighting
-  console.log("letter score:"+ letterScore);
-  const gearRatio = 0.1 + (0.6 * (Math.sin(wordCount * 0.3) * 0.5 )+ (0.1*(5-letterScore))); // 0.2–0.7
+  console.log("letter score:" + letterScore);
+  const gearRatio =
+    0.1 + (0.6 * (Math.sin(wordCount * 0.3) * 0.5) + 0.1 * (5 - letterScore)); // 0.2–0.7
   const penOffset = 0.8 + Math.abs(normSentiment) * 8.2; // 0.1–0.5
 
   console.log(sentiment);
@@ -367,15 +372,15 @@ function analyzeTextToSpiroParams(text, isShadow) {
 }
 
 const letterScores = {
-  'g': 5,
-  'y': 4,
-  'k': 4,
-  'j': 3,
-  'b': 3
+  g: 5,
+  y: 4,
+  k: 4,
+  j: 3,
+  b: 3,
 };
 
 function scoreLetters(text) {
-  const cleaned = text.toLowerCase().replace(/[^a-z]/g, '');
+  const cleaned = text.toLowerCase().replace(/[^a-z]/g, "");
   let score = 0;
   let count = 0;
 
@@ -388,14 +393,17 @@ function scoreLetters(text) {
   return score / count || 0;
 }
 
-function getColorFromText(result, shadow=false) {
+function getColorFromText(result, shadow = false) {
   const scoreCount = new Map();
 
   // Count frequency of each sentiment score
   result.calculation.forEach((entry) => {
     const score = Object.values(entry)[0];
     if (typeof score === "number") {
-      scoreCount.set(score, (scoreCount.get(shadow?score:11-score) || 0) + 1);
+      scoreCount.set(
+        score,
+        (scoreCount.get(shadow ? score : 11 - score) || 0) + 1
+      );
     }
   });
 
@@ -470,8 +478,14 @@ export function drawSpirograph() {
   const nounsArr = doc.nouns().out("array");
   const verbsArr = doc.verbs().out("array");
   const emotiveVerbs = doc.verbs().not("#Infinitive").out("array");
-  console.log("emotiveVerbs:" + emotiveVerbs)
-  const signalWordsArr = [...nounsArr, ...verbsArr, ...emotiveVerbs, ...emotiveVerbs, ...emotiveVerbs];
+  console.log("emotiveVerbs:" + emotiveVerbs);
+  const signalWordsArr = [
+    ...nounsArr,
+    ...verbsArr,
+    ...emotiveVerbs,
+    ...emotiveVerbs,
+    ...emotiveVerbs,
+  ];
   let shadowDoc = nlp(text);
   signalWordsArr.forEach((word) => {
     // Match exact word with word boundaries
@@ -529,37 +543,35 @@ function wait(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-export function createdSVG() {
+function downloadSVG() {
   const svg = document.getElementById("spiro");
-
   const serializer = new XMLSerializer();
-  let source = serializer.serializeToString(svg);
 
-  // Add namespaces if missing
-  if (!source.match(/^<svg[^>]+xmlns="http:\/\/www\.w3\.org\/2000\/svg"/)) {
-    source = source.replace(/^<svg/, '<svg xmlns="http://www.w3.org/2000/svg"');
+  // Clone to avoid altering DOM
+  const clone = svg.cloneNode(true);
+
+  // Inject metadata
+  const metadata = document.createElementNS("http://www.w3.org/2000/svg", "metadata");
+  metadata.textContent = `
+    Spiroquad v1.0 — A generative spirograph crafted from poetic inputs.
+    https://jupiterbyrd.github.io/spiroquad
+    Easter Egg: The spirograph hears your words.`;
+  clone.insertBefore(metadata, clone.firstChild);
+
+  // Serialize
+  let source = serializer.serializeToString(clone);
+  if (!source.match(/^<\?xml/)) {
+    source = '<?xml version="1.0" standalone="no"?>\r\n' + source;
   }
-  if (!source.match(/^<svg[^>]+"http:\/\/www\.w3\.org\/1999\/xlink"/)) {
-    source = source.replace(
-      /^<svg/,
-      '<svg xmlns:xlink="http://www.w3.org/1999/xlink"'
-    );
-  }
 
-  // Add XML declaration
-  source = '<?xml version="1.0" standalone="no"?>\n' + source;
-
-  // Create blob
   const blob = new Blob([source], { type: "image/svg+xml;charset=utf-8" });
   const url = URL.createObjectURL(blob);
 
-  // Find the same <a>
-  const link = document.getElementById("download-link");
-  link.href = url;
-  link.download = "spirograph.svg";
-  link.click();
-  // Revoke URL after download
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "spiroquad.svg";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
-
-//STYLING STUFFFFFF
