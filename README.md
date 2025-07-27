@@ -1,9 +1,12 @@
-# 🎠 Spiroquad — Whimsical Quadrilateral Spirograph Generator
+# 🎠 Spiroquad 
+## Whimsical Quadrilateral Spirograph Generator
 
 Welcome to **Spiroquad**, a playful spirograph toy built in HTML, CSS, and JavaScript.
 
 🌀 **What is it?**  
 **Spiroquad** lets you generate beautiful, gear-like looping patterns — but with a twist: the “gear” is a quadrilateral! Combine this geometric base with your own text input to hash out unique spirographs, infused with hidden sentiment and whimsy.
+
+![Spiroquad example](./screenshot.png)
 
 ---
 
