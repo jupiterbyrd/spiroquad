@@ -1,3 +1,8 @@
+import Sentiment from 'https://cdn.jsdelivr.net/npm/sentiment/+esm';
+
+document.querySelector('#downloadButton').addEventListener('click', createdSVG);
+document.querySelector('#drawButton').addEventListener('click', drawSpirograph);
+
 class Spirograph {
   constructor(R, r, d) {
     this.R = R; // Big circle radius
@@ -177,10 +182,69 @@ function createDefinitions() {
     svg.appendChild(defs);
 }
 
-function drawSpirograph() {
+function getInput() {
+  //Get the textarea element by its ID
+  const textarea = document.getElementById("prompt");
+
+  // Get the value of the textarea
+  const textareaValue = textarea.value;
+  
+  const params = analyzeTextToSpiroParams("Quiet evening with a good book.");
+  
+  console.log(params)
+
+  return params;
+
+}
+
+
+function analyzeTextToSpiroParams(text) {
+  const sentimentObj = new Sentiment();
+  const sentiment = sentimentObj.analyze(text);
+
+  // Raw stats
+  const wordCount = text.trim().split(/\s+/).length;
+  const charCount = text.length;
+  const avgWordLength = charCount / wordCount || 1;
+  const uppercaseCount = (text.match(/[A-Z]/g) || []).length;
+  const punctuationCount = (text.match(/[.,!?;:]/g) || []).length;
+  const exclamations = (text.match(/!/g) || []).length;
+  const newlines = (text.match(/\n/g) || []).length;
+
+  // Normalized sentiment score: from -1 to +1
+  const normSentiment = Math.max(-1, Math.min(1, sentiment.comparative));
+
+  // Text complexity and style mappings
+  const vertices = Math.max(3, Math.min(10, Math.floor(avgWordLength))); // 3–10
+  const gearRatio = 0.2 + 0.5 * (Math.sin(wordCount * 0.3) * 0.5 + 0.5);   // 0.2–0.7
+  const penOffset = 0.1 + (Math.abs(normSentiment) * 0.4);               // 0.1–0.5
+
+  const strokeHue = Math.floor(200 + normSentiment * 120); // blue→green→red
+  const strokeColor = `hsl(${strokeHue}, 80%, 65%)`;
+
+  const symmetrySkew = (punctuationCount + exclamations) * 0.01;         // Subtle irregularity
+  const strokeWidth = 1 + Math.min(4, uppercaseCount * 0.1);             // Bold if intense
+  const dashPattern = newlines > 0 ? [4, 2] : null;                      // If multiline, dashed
+
+  return {
+    vertices,
+    gearRatio,
+    penOffset,
+    strokeColor,
+    strokeWidth,
+    symmetrySkew,
+    dashPattern,
+  };
+}
+
+
+export function drawSpirograph() {
   createDefinitions()
+
+  getInput()
+
   const rollingGearRadius = 86;
-const penOffset = 90;
+  const penOffset = 90;
 
 //context.clearRect(0, 0, canvas.width, canvas.height);
 // Square stationary gear
@@ -192,16 +256,14 @@ const ICECREAM_STICK = [
 ];
  
 
-    
-
     const spiroGear = new PolygonGearSpirograph(ICECREAM_STICK, rollingGearRadius,penOffset);
-    const points = spiroGear.generatePoints(stepsPerEdge=500, threshold=0.5);
+    const points = spiroGear.generatePoints();
 
     const spiro = new Spirograph(200, 132, 80);
     //const points = spiro.generatePoints(stepsPerEdge=500, threshold=0.5);
-    const circlepoints = spiro.generatePoints(stepsPerEdge=500);
+    const circlepoints = spiro.generatePoints();
  
-    drawAnimated(points, color="var(--jupiterbyrd-orange)");
+    drawAnimated(points, "var(--jupiterbyrd-orange)");
     
 
     drawAnimated(circlepoints, "white");
@@ -245,7 +307,7 @@ function wait(ms) {
 
 
 
-function createdSVG() {
+export function createdSVG() {
   const svg = document.getElementById('spiro');
   
     const serializer = new XMLSerializer();
@@ -275,7 +337,6 @@ function createdSVG() {
     setTimeout(() => URL.revokeObjectURL(url), 1000);
 
 }
-
 
 
 //STYLING STUFFFFFF
