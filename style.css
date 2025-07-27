@@ -4,7 +4,18 @@
     --jupiterbyrd-orange: #dd7825;
     --light: #457865;
     --dark: rgb(0, 0, 0);
+    --gold: rgb(156, 125, 25);
     --background: #f4feff;
+    --copper: rgb(150, 135, 123);
+    --tea-green: rgb(96, 102, 76);
+    --sage: #cecc97ff;
+    --dim-gray: rgb(81, 81, 108);
+    --paynes-gray: rgb(172, 213, 231);
+    --paynes-gray-2: rgb(72, 88, 78);
+    --air-force-blue: #628492ff;
+    --slate-gray: #648390ff;
+    --air-force-blue-2: rgb(94, 153, 179);
+    --cadet-gray: rgb(59, 49, 63);
 
 }
 body {
