@@ -17,10 +17,9 @@ export const PALETTE = [
 
 ];
 
-//document
-  //.querySelector("#downloadButton")
-  //.addEventListener("click", downloadSVG());
+document.querySelector("#downloadButton").addEventListener("click", downloadSVG);
 document.querySelector("#drawButton").addEventListener("click", drawSpirograph);
+
 class CircleSpirograph {
   constructor({
     vertices = 4,
@@ -543,7 +542,14 @@ function wait(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+function getFilename() {
+  let randomNumber = Math.random();
+  console.log(randomNumber); // Outputs a random number like 0.23456789
+  
+}
+
 function downloadSVG() {
+  console.log("Downloading SVG...");
   const svg = document.getElementById("spiro");
   const serializer = new XMLSerializer();
 
