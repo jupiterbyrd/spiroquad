@@ -1,7 +1,6 @@
 import Sentiment from "https://cdn.jsdelivr.net/npm/sentiment/+esm";
 
 export const PALETTE = [
-  
   "#d24224",
   "#ddd234",
   "#a32342",
@@ -13,11 +12,11 @@ export const PALETTE = [
   "#0e83c4",
   "#0f92d2",
   "#0663a7",
-  
-
 ];
 
-document.querySelector("#downloadButton").addEventListener("click", downloadSVG);
+document
+  .querySelector("#downloadButton")
+  .addEventListener("click", downloadSVG);
 document.querySelector("#drawButton").addEventListener("click", drawSpirograph);
 
 class CircleSpirograph {
@@ -459,7 +458,6 @@ export function drawSpirograph() {
   //const points = spiroGear.generatePoints();
 
   const text = getInput();
-
   const doc = nlp(text);
   const nouns = doc.nouns().out("text");
   const verbs = doc.verbs().isPlural().out("text");
@@ -542,11 +540,7 @@ function wait(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-function getFilename() {
-  let randomNumber = Math.random();
-  console.log(randomNumber); // Outputs a random number like 0.23456789
-  
-}
+function getFilename() {}
 
 function downloadSVG() {
   console.log("Downloading SVG...");
@@ -557,7 +551,10 @@ function downloadSVG() {
   const clone = svg.cloneNode(true);
 
   // Inject metadata
-  const metadata = document.createElementNS("http://www.w3.org/2000/svg", "metadata");
+  const metadata = document.createElementNS(
+    "http://www.w3.org/2000/svg",
+    "metadata"
+  );
   metadata.textContent = `
     Spiroquad v1.0 — A generative spirograph crafted from poetic inputs.
     https://jupiterbyrd.github.io/spiroquad
@@ -575,7 +572,12 @@ function downloadSVG() {
 
   const a = document.createElement("a");
   a.href = url;
-  a.download = "spiroquad.svg";
+  const text = getInput();
+  let filename  = "";
+  for (let index = 0; index < 16; index++) {
+    filename += text.charAt(Math.floor(Math.random() * text.length));
+  }
+  a.download = filename.toUpperCase()+ ".svg";
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
